@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Include TRANSCRIPT in IWI target datastreams.
+ *
+ * return an array with a minimum of 'dsid' and 'mime' values.
+ */
+/**
+ * Implements hook_iwi_ingestible_datastreams_alter().
+ */
+function apwa_iw_iwi_ingestible_datastreams_alter(&$datastreams, $object, $mimetypes) {
+  $datastreams['TRANSCRIPT_WF (text/plain)'] = array(
+    'dsid' => 'TRANSCRIPT_WF',
+    'mime' => 'text/plain',
+  );
+}

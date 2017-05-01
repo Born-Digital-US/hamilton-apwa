@@ -1,0 +1,8 @@
+name = APWA - Islandora Webform Integration
+description = Customizations for Islandora Webform.
+core = 7.x
+version = 7.x-1.4-rc1
+package = APWA
+dependencies[] = islandora_webform
+dependencies[] = islandora_webform_ingest
+dependencies[] = webform_workflow

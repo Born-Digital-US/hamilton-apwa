@@ -1,0 +1,69 @@
+/* DHi added side-by-side object+webform viewer */
+#islandora_webform_object_tag_links{
+   /*   border: 1px solid #999;
+   background-color: rgb(238, 238, 238); */
+   padding-bottom: 10px;
+   margin-bottom: 20px;
+}
+/* .webform-links::before{
+    content: "Authorized users will see a link below the essay to begin transcribing this essay.\aTo use side-by-side viewing while transcribing, right click on the link and open the transcription form in new browser window.\aThen rearrange the two browsers side-by-side.\aIf that is inconvenient, download the original to your PDF viewer, transcribe it, and paste it into the transcription form later.\a";
+    color: white;
+    color: BlueViolet;
+    white-space: pre;
+}
+*/
+#block-block-1 > .content{
+   border: 1px solid #999;
+   background-color: rgb(238, 238, 238);
+}
+#iw_iwebform_links_3,
+#iw_iwebform_links_8 > div > a.webform-link.use-ajax.ajax-processed{
+   font-size: 1.1em;
+   font-weight: 400;
+}
+#islandora_webform_object_tag_links .webform-links-wrapper.opened{
+   border: none
+}
+#webform-client-form-3,
+#webform-client-form-8{
+   /*    background-color: rgb(255, 255, 255); */
+   border: 1px solid #999;
+   padding: 15px;
+   box-shadow: 5px 5px 5px grey;
+}
+#webform-client-form-3::before,
+#webform-client-form-8::before{
+   content: "Transcription Form:\a\a";
+   font-size: 2.0em;
+   font-weight: 400;
+}
+/* style for Views > prison */
+.view-grouping-header{
+   margin-top: 10px;
+   margin-bottom: 5px;
+   font-size: 1.5em;
+   border-bottom: 1px solid #999
+}
+/* Drupal block border */
+#wrapper #container .sidebar .block{
+   border: 1px solid #999;
+   background-color: #ebebeb;
+   border-radius: 15px;
+   border-top-left-radius: 15px;
+   border-top-right-radius: 15px;
+   border-bottom-right-radius: 15px;
+   border-bottom-left-radius: 15px;
+   padding: 8px;
+   margin-right: 4px;
+   margin-left: 4px;
+}
+
+.content iframe{
+   /* The min-height and max-height settings override height setting.*/
+   /* min-height overrides max-height.*/
+   resize: vertical;
+   /* suppressed until we figure out how to set a default height that allows reducing the window size */
+/*   height: auto; */
+/*    min-height: 250px;  */
+   /*   overflow: hidden;*/ /* use this if all you want is the minimum size window : user will have to enlarge the window manually */
+}

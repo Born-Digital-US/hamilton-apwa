@@ -1,0 +1,28 @@
+/**
+ * hamilton added styles
+ */
+ /*
+/* hamilton placement of background image in header */
+#header {
+    background-image: url("http://apw.dhinitiative.org/sites/apw.dhinitiative.org/themes/garland_apw_dhi/images/apw-banner.jpg");
+    background-repeat: repeat-x;
+    background-position:209px 1px;
+}
+/* to bold the links in the header */
+#header #branding #logo {
+    margin-top:-14px;
+}
+#header a {
+    color: #fff;
+    font-weight:bold;
+    text-shadow: 1px 1px #000;
+}
+/* to pad left margin of the site name in the header */
+#header span {
+    font-size:1.3em;
+    padding-left:20px;
+    text-shadow: 2px 2px #000;
+}
+#center .breadcrumb a {
+    font-weight:bold
+}

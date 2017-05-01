@@ -1,0 +1,9 @@
+#node-16 #header {display:none}
+#node-16 #footer-wrapper {display:none}
+#node-16 #block-system-navigation {display:none}
+#node-16 #breadcrumb {display:none}
+#node-16 #block-islandora-solr-advanced {display:none}
+#node-16 h2 {display:none}
+#node-16 #content.column {display:none}
+#node-16 #block-islandora-solr-basic-facets {margin-left:-20px;width:657px}
+#node-16 div.islandora-solr-facet-wrapper ul.islandora-solr-facet li span.plusminus {display:none}

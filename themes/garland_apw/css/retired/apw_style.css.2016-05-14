@@ -1,0 +1,31 @@
+/* DHi added side-by-side object+webform viewer */
+#islandora_webform_object_tag_links {
+    border:1px solid #999;
+    background-color: rgb(238,238,238);
+    padding-bottom:10px;
+    margin-bottom:20px;
+}
+.webform-links::before {
+    content: "A Note for Registered Transcribers:\a\aIf this essay is available for transcribing, a link to the transcription form will appear below.\aIf you prefer a side-by-side view while transcribing,\aright click on the link and open the link in new browser session/window.\aThen rearrange the two browsers side-by-side.\aIf that is inconvenient, download the original and print it before transcribing it here\ausing the transcription form.\a\a";
+    color: BlueViolet;
+    white-space: pre;
+}
+#iw_iwebform_links_3, #iw_iwebform_links_8 > div > a.webform-link.use-ajax.ajax-processed{
+    font-size:1.5em;
+    font-weight:400;
+}
+#islandora_webform_object_tag_links .webform-links-wrapper.opened {
+    border:none
+}
+#webform-client-form-3, #webform-client-form-8 {
+    background-color: rgb(255,255,255);
+    border:1px solid #999;
+    padding: 15px;
+    box-shadow: 5px 5px 5px grey;
+}
+#webform-client-form-3::before, #webform-client-form-8::before {
+    content:"Transcription Form:\a\a";
+    font-size:2.0em;
+    font-weight:400;
+}
+
