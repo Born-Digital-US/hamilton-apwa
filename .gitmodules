@@ -1,0 +1,3 @@
+[submodule "modules/custom/islandora_webform"]
+	path = modules/custom/islandora_webform
+	url = git@github.com:patdunlavey/islandora_webform.git
