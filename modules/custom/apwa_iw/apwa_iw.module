@@ -1,4 +1,13 @@
 <?php
+/**
+ * @file
+ * Code for the APWA Islandora Webform Integration feature.
+ */
+
+include_once 'apwa_iw.features.inc';
+
+include_once 'includes/apwa_iw.workflow_feature.inc';
+
 
 /**
  * Include TRANSCRIPT in IWI target datastreams.
@@ -14,3 +23,46 @@ function apwa_iw_iwi_ingestible_datastreams_alter(&$datastreams, $object, $mimet
     'mime' => 'text/plain',
   );
 }
+
+/**
+ * Implements hook_islandora_webform_theme_webform_link_alter().
+ */
+function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $islandora_webform_record) {
+//  dpm(get_defined_vars());
+}
+
+/**
+ * Implements hook_islandora_webform_theme_webform_link_alter().
+ */
+function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
+  foreach(element_children($render) as $jqid) {
+    if (!empty($render[$jqid]['webform-links'])) {
+      $webform_link_indexes = element_children($render[$jqid]['webform-links']);
+      foreach($webform_link_indexes as $webform_link_index) {
+
+      }
+      $submissions = !empty($render[$jqid]['#submissions']) ? $render[$jqid]['#submissions'] : array();
+      $state_counts = array('is draft' => 0);
+      foreach($submissions as $sid => $submission) {
+        if(!empty($submission->is_draft)) {
+          $state_counts['is draft'] += 1;
+        }
+        if(!empty($submission->_webform_workflow_state->wsid)) {
+          $ws = $submission->_webform_workflow_state;
+          $wsindex = 'wsid_' . $ws->wsid;
+          $state_counts[$ws->wsid] = 1 + (empty($state_counts[$ws->wsid]) ? 0 : $state_counts[$ws->wsid]);
+        }
+      }
+    }
+    module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
+    $show_states = apwa_iw_webform_link_states();
+//    foreach($show_states as $wsid => $show_state) {
+//      if(!empty($state_counts[$wsid])) {
+//        $label = $show_state['label'];
+//        break;
+//      }
+//    }
+  }
+  dpm(get_defined_vars());
+}
+
