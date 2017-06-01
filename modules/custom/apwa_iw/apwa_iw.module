@@ -8,6 +8,8 @@ include_once 'apwa_iw.features.inc';
 
 include_once 'includes/apwa_iw.workflow_feature.inc';
 
+define('APWA_INLINE_WEBFORM_DOM_ID', 'apwa_inline_webform_target');
+
 
 /**
  * Include TRANSCRIPT in IWI target datastreams.
@@ -36,33 +38,52 @@ function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $isl
  */
 function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
   foreach(element_children($render) as $jqid) {
-    if (!empty($render[$jqid]['webform-links'])) {
-      $webform_link_indexes = element_children($render[$jqid]['webform-links']);
-      foreach($webform_link_indexes as $webform_link_index) {
+    if($jqid != 'inline-webform-target') {
+      if (!empty($render[$jqid]['webform-links'])) {
+        $webform_link_indexes = element_children($render[$jqid]['webform-links']);
+        foreach($webform_link_indexes as $webform_link_index) {
 
-      }
-      $submissions = !empty($render[$jqid]['#submissions']) ? $render[$jqid]['#submissions'] : array();
-      $state_counts = array('is draft' => 0);
-      foreach($submissions as $sid => $submission) {
-        if(!empty($submission->is_draft)) {
-          $state_counts['is draft'] += 1;
         }
-        if(!empty($submission->_webform_workflow_state->wsid)) {
-          $ws = $submission->_webform_workflow_state;
-          $wsindex = 'wsid_' . $ws->wsid;
-          $state_counts[$ws->wsid] = 1 + (empty($state_counts[$ws->wsid]) ? 0 : $state_counts[$ws->wsid]);
+        $submissions = !empty($render[$jqid]['#submissions']) ? $render[$jqid]['#submissions'] : array();
+        $state_counts = array('is draft' => 0);
+        foreach($submissions as $sid => $submission) {
+          if(!empty($submission->is_draft)) {
+            $state_counts['is draft'] += 1;
+          }
+          if(!empty($submission->_webform_workflow_state->wsid)) {
+            $ws = $submission->_webform_workflow_state;
+            $state_counts[$ws->wsid] = 1 + (empty($state_counts[$ws->wsid]) ? 0 : $state_counts[$ws->wsid]);
+          }
+        }
+      }
+      module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
+      $show_states = apwa_iw_webform_link_states();
+      // We rely on these link states being sorted by priority. First match "wins".
+      foreach($show_states as $wsid => $show_state) {
+        if(!empty($state_counts[$wsid])) {
+          $label = t('!label (!count)',array('!label' => $show_state['link-text'], '!count' => $state_counts[$wsid]));
+          $render[$jqid]['webform-links'][$alter_data['islandora_object']->id][] = array('#markup' => $label);
         }
       }
     }
-    module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
-    $show_states = apwa_iw_webform_link_states();
-//    foreach($show_states as $wsid => $show_state) {
-//      if(!empty($state_counts[$wsid])) {
-//        $label = $show_state['label'];
-//        break;
-//      }
-//    }
   }
-  dpm(get_defined_vars());
+}
+
+/**
+ * Implements hook_iw_inline_webform_ajax_commands_alter().
+ *
+ * Target the inline islandora webform to a new location.
+ */
+function apwa_iw_iw_inline_webform_ajax_commands_alter(&$commands, $vars) {
+  $target = '#' . APWA_INLINE_WEBFORM_DOM_ID;
+  $commands['remove-container'] = ajax_command_remove($target .  ' > *');
+  // Set css on webform links wrapper.
+  $commands['remove-wrapper-class'] = ajax_command_invoke('.webform-links-wrapper', 'removeClass', array('opened'));
+  $commands['add-wrapper-class'] = ajax_command_invoke('#iw_webform_links_' . $vars['webform']->nid . '.webform-links-wrapper', 'addClass', array('opened'));
+  $commands['remove-object-display-wrapper-class'] = ajax_command_invoke('#islandora_object_display_wrapper', 'removeClass', array('display-webform'));
+  $commands['add-object-display-wrapper-class'] = ajax_command_invoke('#islandora_object_display_wrapper', 'addClass', array('display-webform'));
+
+  // Target a different div for the inline webform.
+  $commands['jquery-selector'] = ajax_command_append($target, $vars['html']);
 }
 

@@ -67,3 +67,33 @@
 /*    min-height: 250px;  */
    /*   overflow: hidden;*/ /* use this if all you want is the minimum size window : user will have to enlarge the window manually */
 }
+
+
+#islandora_object_display_wrapper.display-webform{
+  display: flex;
+  flex-direction: row;
+  position:relative;
+}
+
+.display-webform #apwa_inline_webform_target_wrapper{
+  display: flex; /* a flex box itself so the right panel can take all space not taken by the handler */
+  flex-direction: row;
+  width: 40%;
+
+  /* hack to ignore the absolute positioning done by jquery ui */
+  left:0 !important;
+  position:relative !important;
+  /* removing this completely destroys the functionality in IE and FF */
+}
+
+#islandora_object_display_wrapper.display-webform .islandora-object-content-wrapper{
+  flex : 1;
+}
+
+.display-webform #apwa_inline_webform_target{
+  flex : 1;
+  padding-left:15px;
+}
+
+
+#iw_iwebform_links_3
