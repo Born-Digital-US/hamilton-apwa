@@ -1,0 +1,123 @@
+<?php
+
+/**
+ * Implements hook_library().
+ */
+function apwa_theme_library() {
+  $libraries['drag-resize'] = array(
+    'title' => 'JQuery UI Drag and Resize',
+    'website' => 'http://jqueryui.com/download/#!version=1.12.1&components=101100000100101000000000010000000000000000000000',
+    'version' => '1.2',
+    'js' => array(
+      drupal_get_path('module', 'apwa_theme') . '/libraries/jquery-ui-1.12.1.drag-resize/jquery-ui.min.js' => array(),
+    ),
+    'css' => array(
+      drupal_get_path('module', 'apwa_theme') . '/libraries/jquery-ui-1.12.1.drag-resize/jquery-ui.min.css' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      ),
+      drupal_get_path('module', 'apwa_theme') . '/libraries/jquery-ui-1.12.1.drag-resize/jquery-ui..structure.min.css' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      ),
+      drupal_get_path('module', 'apwa_theme') . '/libraries/jquery-ui-1.12.1.drag-resize/jquery-ui.theme.min.css' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      ),
+    ),
+  );
+  return $libraries;
+}
+
+
+/**
+ * Implements hook_process_template for each known content model.
+ *
+ * @TODO: Is there some way to do this dynamically?
+ */
+function apwa_theme_process_islandora_default(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_object_print(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_object_print_object(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_audio(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_book_book(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+  $vars['islandora_content'] = $vars['viewer'];
+}
+function apwa_theme_process_islandora_book_page(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+  $vars['islandora_content'] = $vars['viewer'];
+}
+function apwa_theme_process_islandora_disk_image(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_person(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_dept(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_basic_image(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_basic_image_print(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_large_image(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_large_image_print(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_newspaper(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_newspaper_issue(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_newspaper_page(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_pdf(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_pdf_print(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_video(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_web_archive(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
+function apwa_theme_process_islandora_videojs(&$vars) {
+  module_load_include('inc', 'apwa_theme', 'includes/object_display');
+  apwa_theme_process_all_object_view($vars);
+}
