@@ -1,4 +1,0 @@
-name = APWA Theme Functionality
-core = 7.x
-package = APWA
-;dependencies[] = islandora_webform

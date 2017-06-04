@@ -8,7 +8,7 @@
  *
  * @throws \Exception
  */
-function apwa_theme_process_all_object_view(&$vars) {
+function apwa_iw_process_all_object_view(&$vars) {
 
   // Compound objects recursively call object view without the islandora_object
   // being loaded, so try to load it now. If unsuccessful, exit.
@@ -65,6 +65,8 @@ function apwa_theme_process_all_object_view(&$vars) {
       );
     }
   }
-  drupal_add_js(drupal_get_path('module', 'apwa_theme') . '/js/resize-transcription-window.js');
-  drupal_add_library('apwa_theme', 'drag-resize');
+  drupal_add_js(drupal_get_path('module', 'apwa_iw') . '/js/resize-transcription-window.js');
+  drupal_add_js(drupal_get_path('module', 'apwa_iw') . '/js/transcript_wf.js');
+  drupal_add_js(array('apwa_iw' => array('pid' => $vars['islandora_object']->id, 'target' => '#' . APWA_INLINE_WEBFORM_DOM_ID)), 'setting');
+  drupal_add_library('apwa_iw', 'drag-resize');
 }
