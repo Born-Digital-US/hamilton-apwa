@@ -6,6 +6,12 @@ dependencies[] = features
 dependencies[] = inline_entity_form
 dependencies[] = list
 dependencies[] = options
+dependendies[] = views_bulk_operations
+dependendies[] = webform_workflow
+dependendies[] = islandora_webform
+dependendies[] = islandora_webform_ingest
+dependencies[] = webform_ajax
+
 features[ctools][] = apwa_iw:apwa_iw.features:1
 features[features_api][] = api:2
 features[field_base][] = webform_workflow_states
