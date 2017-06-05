@@ -93,6 +93,7 @@
 
 #islandora_object_display_wrapper.display-webform .islandora-object-content-wrapper{
   flex : 1;
+  margin-right:5px;
 }
 
 .display-webform #apwa_inline_webform_target{
