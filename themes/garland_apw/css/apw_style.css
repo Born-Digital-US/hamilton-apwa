@@ -25,11 +25,16 @@
    border: none
 }
 #webform-client-form-3,
-#webform-client-form-8{
+#webform-client-form-8,
+.inline-webform-target{
    /*    background-color: rgb(255, 255, 255); */
    border: 1px solid #999;
    padding: 15px;
    box-shadow: 5px 5px 5px grey;
+}
+.inline-webform-target {
+  height:100%;
+  overflow-y:scroll;
 }
 #webform-client-form-3::before,
 #webform-client-form-8::before{
@@ -92,8 +97,10 @@
 
 .display-webform #apwa_inline_webform_target{
   flex : 1;
-  padding-left:15px;
 }
 
 
-#iw_iwebform_links_3
+#transcript_wf_link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -29,7 +29,6 @@
     </div>
   <?php if($webform_target) : ?>
   <div id="apwa_inline_webform_target_wrapper">
-<!--    <div id="apwa_inline_webform_target_handle" class="ui-resizable-handle ui-resizable-w"></div>-->
     <?php print(render($webform_target)); ?>
   </div>
   <?php endif; ?>
