@@ -96,6 +96,10 @@
   margin-right:5px;
 }
 
+#iw_inline_webform_target {
+  margin-left:10px;
+}
+
 .display-webform #apwa_inline_webform_target{
   flex : 1;
 }

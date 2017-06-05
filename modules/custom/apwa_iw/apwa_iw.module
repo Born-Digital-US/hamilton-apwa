@@ -96,6 +96,37 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
 }
 
 /**
+ * Implements hook_islandora_webform_theme_webform_link_alter().
+ *
+ * If user is anonymous, and by logging in could submit a transcription, provide a link
+ * to a webform where volunteer intake information can be gathered.
+ */
+function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $islandora_webform_record, $pid) {
+  if(empty(element_children($webform_link))) {
+    $node = node_load($islandora_webform_record->entity_id);
+    if(user_is_anonymous() && in_array(2, $node->webform['roles']) && !islandora_webform_submission_total_limit_check($node, $pid)) {
+      $webform_link['sign-up'] = array(
+        '#theme' => 'link',
+        '#text' => t('Help transcribe this.'),
+        // TODO Edit this path to point to a webform to intake transcribers.
+        '#path' => '/',
+        '#options' => array(
+          'attributes' => array(
+            'class' => array(
+              'transcriber-sign-up'
+            ),
+            'title' => t('Log in or request an account to join our transcription team.')
+          ),
+          'html' => FALSE,
+          'query' => drupal_get_destination(),
+        ),
+      );
+
+    }
+  }
+}
+
+/**
  * Implements hook_iw_inline_webform_ajax_commands_alter().
  *
  * Target the inline islandora webform to a new location.
