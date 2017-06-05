@@ -56,29 +56,31 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
           }
         }
       }
-      module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
-      $show_states = apwa_iw_webform_link_states();
-      foreach($show_states as $wsid => $show_state) {
-        if(!empty($state_counts[$wsid]['total'])) {
-          $label = format_plural($state_counts[$wsid]['total'], '1 !single', '@count !plural', array('!single' => $show_state['link-text-single'], '!plural' => $show_state['link-text-plural']));
-          if(!empty($state_counts[$wsid]['by-user'])) {
-            $label .= t(' (including !count by you)', array('!count' => $state_counts[$wsid]['by-user']));
-          }
-          $render[$jqid]['webform-links'][$alter_data['islandora_object']->id][] = array(
-            '#type' => 'container',
-            '#attributes' => array(
-              'class' => array(
-                'webform-state-label',
-                drupal_html_class('wsid-' . $wsid),
-              ),
-            ),
-            array('#markup' => $label),
-          );
+    }
+  }
+  if(empty($alter_data['islandora_object']['TRANSCRIPT_WF'])) {
+    module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
+    $show_states = apwa_iw_webform_link_states();
+    foreach($show_states as $wsid => $show_state) {
+      if(!empty($state_counts[$wsid]['total'])) {
+        $label = format_plural($state_counts[$wsid]['total'], '1 !single', '@count !plural', array('!single' => $show_state['link-text-single'], '!plural' => $show_state['link-text-plural']));
+        if(!empty($state_counts[$wsid]['by-user'])) {
+          $label .= t(' (including !count by you)', array('!count' => $state_counts[$wsid]['by-user']));
         }
+        $render[$jqid]['webform-links'][$alter_data['islandora_object']->id][] = array(
+          '#type' => 'container',
+          '#attributes' => array(
+            'class' => array(
+              'webform-state-label',
+              drupal_html_class('wsid-' . $wsid),
+            ),
+          ),
+          array('#markup' => $label),
+        );
       }
     }
   }
-  if (!empty($alter_data['islandora_object']['TRANSCRIPT_WF'])) {
+  else {
     $render['transcript-link'] = array(
       '#type' => 'container',
       '#attributes' => array(
@@ -91,7 +93,6 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
       array('#markup' => t('View transcription')),
     );
   }
-
 }
 
 /**
