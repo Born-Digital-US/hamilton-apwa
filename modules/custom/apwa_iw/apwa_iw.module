@@ -27,16 +27,10 @@ function apwa_iw_iwi_ingestible_datastreams_alter(&$datastreams, $object, $mimet
 }
 
 /**
- * Implements hook_islandora_webform_theme_webform_link_alter().
- */
-function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $islandora_webform_record) {
-//  dpm(get_defined_vars());
-}
-
-/**
- * Implements hook_islandora_webform_theme_webform_link_alter().
+ * Implements hook_islandora_webform_theme_webform_links_alter().
  */
 function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
+  global $user;
   foreach(element_children($render) as $jqid) {
     if($jqid != 'inline-webform-target') {
       if (!empty($render[$jqid]['webform-links'])) {
@@ -45,24 +39,41 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
 
         }
         $submissions = !empty($render[$jqid]['#submissions']) ? $render[$jqid]['#submissions'] : array();
-        $state_counts = array('is draft' => 0);
+        $state_counts = array('is draft' => array('total' => 0, 'by-user' => 0));
         foreach($submissions as $sid => $submission) {
           if(!empty($submission->is_draft)) {
-            $state_counts['is draft'] += 1;
+            $state_counts['is draft']['total'] += 1;
+            if($user->uid && $submission->uid == $user->uid) {
+              $state_counts['is draft']['by-user'] += 1;
+            }
           }
           if(!empty($submission->_webform_workflow_state->wsid)) {
             $ws = $submission->_webform_workflow_state;
-            $state_counts[$ws->wsid] = 1 + (empty($state_counts[$ws->wsid]) ? 0 : $state_counts[$ws->wsid]);
+            $state_counts[$ws->wsid]['total'] = 1 + (empty($state_counts[$ws->wsid]['total']) ? 0 : $state_counts[$ws->wsid]['total']);
+            if($user->uid && $submission->uid == $user->uid) {
+              $state_counts[$ws->wsid]['by-user'] = 1 + (empty($state_counts[$ws->wsid]['by-user']) ? 0 : $state_counts[$ws->wsid]['by-user']);
+            }
           }
         }
       }
       module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
       $show_states = apwa_iw_webform_link_states();
-      // We rely on these link states being sorted by priority. First match "wins".
       foreach($show_states as $wsid => $show_state) {
-        if(!empty($state_counts[$wsid])) {
-          $label = t('!label (!count)',array('!label' => $show_state['link-text'], '!count' => $state_counts[$wsid]));
-          $render[$jqid]['webform-links'][$alter_data['islandora_object']->id][] = array('#markup' => $label);
+        if(!empty($state_counts[$wsid]['total'])) {
+          $label = format_plural($state_counts[$wsid]['total'], '1 !single', '@count !plural', array('!single' => $show_state['link-text-single'], '!plural' => $show_state['link-text-plural']));
+          if(!empty($state_counts[$wsid]['by-user'])) {
+            $label .= t(' (including !count by you)', array('!count' => $state_counts[$wsid]['by-user']));
+          }
+          $render[$jqid]['webform-links'][$alter_data['islandora_object']->id][] = array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'class' => array(
+                'webform-state-label',
+                drupal_html_class('wsid-' . $wsid),
+              ),
+            ),
+            array('#markup' => $label),
+          );
         }
       }
     }
