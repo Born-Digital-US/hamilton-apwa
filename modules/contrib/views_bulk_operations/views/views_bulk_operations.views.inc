@@ -17,6 +17,12 @@ function views_bulk_operations_views_data_alter(&$data) {
           'click sortable' => FALSE,
         ),
       );
+
+      // Check that the base table has the entity type key set.
+      if (!isset($data[$info['base table']]['table']['entity type'])) {
+        $data[$info['base table']]['table']['entity type'] = $entity_type;
+        watchdog('views_bulk_operations', 'Base table for %entity_type does not have the entity type explicitly set.', array('%entity_type' => $info['label']), WATCHDOG_WARNING);
+      }
     }
     if (isset($info['revision table']) && isset($data[$info['revision table']]['table'])) {
       $data[$info['revision table']]['views_bulk_operations'] = array(

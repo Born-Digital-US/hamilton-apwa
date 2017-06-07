@@ -1,0 +1,66 @@
+diff --git a/views/views_bulk_operations.views.inc b/views/views_bulk_operations.views.inc
+index e6c685a..7e26b39 100644
+--- a/views/views_bulk_operations.views.inc
++++ b/views/views_bulk_operations.views.inc
+@@ -17,6 +17,12 @@ function views_bulk_operations_views_data_alter(&$data) {
+           'click sortable' => FALSE,
+         ),
+       );
++
++      // Check that the base table has the entity type key set.
++      if (!isset($data[$info['base table']]['table']['entity type'])) {
++        $data[$info['base table']]['table']['entity type'] = $entity_type;
++        watchdog('views_bulk_operations', 'Base table for %entity_type does not have the entity type explicitly set.', array('%entity_type' => $info['label']), WATCHDOG_WARNING);
++      }
+     }
+     if (isset($info['revision table']) && isset($data[$info['revision table']]['table'])) {
+       $data[$info['revision table']]['views_bulk_operations'] = array(
+diff --git a/views/views_bulk_operations_handler_field_operations.inc b/views/views_bulk_operations_handler_field_operations.inc
+index dcfd534..8b361fa 100644
+--- a/views/views_bulk_operations_handler_field_operations.inc
++++ b/views/views_bulk_operations_handler_field_operations.inc
+@@ -258,6 +258,21 @@ class views_bulk_operations_handler_field_operations extends views_handler_field
+     }
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  function query() {
++    parent::query();
++
++    // Our entity ID may not be added in relationships, so do our best to
++    // it is there so the entities can be loaded or we can pull directly from
++    // the result row.
++    if (method_exists($this->query, 'add_field')) {
++      $this->field_alias = $this->query->add_field($this->table_alias, $this->real_field, '');
++    }
++  }
++
++
+   function render($values) {
+     return '<!--form-item-' . $this->options['id'] . '--' . $this->view->row_index . '-->';
+   }
+diff --git a/views_bulk_operations.module b/views_bulk_operations.module
+index ca1f895..7468682 100644
+--- a/views_bulk_operations.module
++++ b/views_bulk_operations.module
+@@ -12,6 +12,18 @@ define('VBO_ACCESS_OP_CREATE',    0x04);
+ define('VBO_ACCESS_OP_DELETE',    0x08);
+ 
+ /**
++ * Implements hook_module_implements_alter().
++ */
++function views_bulk_operations_module_implements_alter(&$implementations, $hook) {
++  if ($hook == 'views_data_alter') {
++    // Move our implementation to the end.
++    $group = $implementations['views_bulk_operations'];
++    unset($implementations['views_bulk_operations']);
++    $implementations['views_bulk_operations'] = $group;
++  }
++}
++
++/**
+  * Implements hook_action_info().
+  *
+  * Registers custom VBO actions as Drupal actions.

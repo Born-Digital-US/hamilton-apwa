@@ -12,6 +12,18 @@ define('VBO_ACCESS_OP_CREATE',    0x04);
 define('VBO_ACCESS_OP_DELETE',    0x08);
 
 /**
+ * Implements hook_module_implements_alter().
+ */
+function views_bulk_operations_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'views_data_alter') {
+    // Move our implementation to the end.
+    $group = $implementations['views_bulk_operations'];
+    unset($implementations['views_bulk_operations']);
+    $implementations['views_bulk_operations'] = $group;
+  }
+}
+
+/**
  * Implements hook_action_info().
  * Registers custom VBO actions as Drupal actions.
  */

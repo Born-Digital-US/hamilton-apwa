@@ -258,6 +258,21 @@ class views_bulk_operations_handler_field_operations extends views_handler_field
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  function query() {
+    parent::query();
+
+    // Our entity ID may not be added in relationships, so do our best to
+    // it is there so the entities can be loaded or we can pull directly from
+    // the result row.
+    if (method_exists($this->query, 'add_field')) {
+      $this->field_alias = $this->query->add_field($this->table_alias, $this->real_field, '');
+    }
+  }
+
+
   function render($values) {
     return '<!--form-item-' . $this->options['id'] . '--' . $this->view->row_index . '-->';
   }
