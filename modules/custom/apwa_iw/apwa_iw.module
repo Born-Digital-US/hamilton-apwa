@@ -32,6 +32,10 @@ function apwa_iw_iwi_ingestible_datastreams_alter(&$datastreams, $object, $mimet
 function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
   global $user;
   foreach(element_children($render) as $jqid) {
+    if($jqid != 'inline-webform-target' && empty($render[$jqid]['#entity']->webform['status'])) {
+      unset ($render[$jqid]);
+      continue;
+    }
     if($jqid != 'inline-webform-target') {
       if (!empty($render[$jqid]['webform-links'])) {
         $webform_link_indexes = element_children($render[$jqid]['webform-links']);
@@ -102,9 +106,11 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
  * to a webform where volunteer intake information can be gathered.
  */
 function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $islandora_webform_record, $pid) {
+  $signup_count = &drupal_static(__FUNCTION__ . '-signup-count');
   if(empty(element_children($webform_link))) {
     $node = node_load($islandora_webform_record->entity_id);
-    if(user_is_anonymous() && in_array(2, $node->webform['roles']) && !islandora_webform_submission_total_limit_check($node, $pid)) {
+    if(!$signup_count && user_is_anonymous() && in_array(2, $node->webform['roles']) && !islandora_webform_submission_total_limit_check($node, $pid)) {
+      $signup_count += 1;
       $webform_link['sign-up'] = array(
         '#theme' => 'link',
         '#text' => t('Help transcribe this.'),
