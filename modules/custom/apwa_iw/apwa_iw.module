@@ -317,3 +317,23 @@ function islandora_transcript_wf_access_callback($object) {
   return is_object($object) && isset($object['TRANSCRIPT_WF']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['TRANSCRIPT_WF']);
 }
 
+/**
+ * Implements hook_webform_submission_update().
+ */
+function apwa_iw_webform_submission_update($node, $submission) {
+  // Trigger default state transition when draft is completed.
+  if (
+    webform_workflow_is_enabled($node)
+    && !$submission->is_draft
+    && !empty($node->webform_workflow->data['new_gets_first_state'])
+    && !empty($submission->original->is_draft)
+  ) {
+    $state = webform_workflow_state_get_default($node);
+    if (!$state) {
+      return;
+    }
+    $notify = !empty($node->webform_workflow->data['new_triggers_notification']);
+    webform_workflow_transition($submission, $state, t('Set automatically on change from draft to completed'), NULL, $notify, FALSE);
+  }
+}
+
