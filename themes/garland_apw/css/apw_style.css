@@ -105,7 +105,7 @@
 }
 
 
-#transcript_wf_link:hover {
+#transcript_link:hover {
   text-decoration: underline;
   cursor: pointer;
 }

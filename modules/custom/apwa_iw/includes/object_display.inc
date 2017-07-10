@@ -65,8 +65,9 @@ function apwa_iw_process_all_object_view(&$vars) {
       );
     }
   }
+  $apwa_iw_js_settings = array('pid' => $vars['islandora_object']->id, 'target' => '#' . APWA_INLINE_WEBFORM_DOM_ID, 'transcript_ds' => apwa_iw_get_transcription_ds($vars['islandora_object']));
   drupal_add_js(drupal_get_path('module', 'apwa_iw') . '/js/resize-transcription-window.js');
-  drupal_add_js(drupal_get_path('module', 'apwa_iw') . '/js/transcript_wf.js');
-  drupal_add_js(array('apwa_iw' => array('pid' => $vars['islandora_object']->id, 'target' => '#' . APWA_INLINE_WEBFORM_DOM_ID)), 'setting');
+  drupal_add_js(drupal_get_path('module', 'apwa_iw') . '/js/transcript.js');
+  drupal_add_js(array('apwa_iw' => $apwa_iw_js_settings), 'setting');
   drupal_add_library('apwa_iw', 'drag-resize');
 }

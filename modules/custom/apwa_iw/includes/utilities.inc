@@ -6,7 +6,7 @@
  */
 
 /**
- * Renders the TRANSCRIPT_WF page.
+ * Renders the transcription page.
  *
  * @pararm AbstractObject $object
  *   The object the TRANSCRIPT belongs to.
@@ -14,8 +14,8 @@
  * @return array
  *   A renderable array representing the tab.
  */
-function islandora_transcript_wf_view(AbstractObject $object) {
-  $transcript = $object['TRANSCRIPT_WF']->content;
+function apwa_transcript_view(AbstractObject $object, $ds) {
+  $transcript = $object[$ds]->content;
   return array(
     'transcript' => array(
       '#markup' => '<pre>' . wordwrap($transcript) . '</pre>',
@@ -23,7 +23,7 @@ function islandora_transcript_wf_view(AbstractObject $object) {
   );
 }
 
-function islandora_transcript_wf_getajax(AbstractObject $object) {
+function apwa_transcript_getajax(AbstractObject $object, $ds) {
   $return = array(
     '#type' => 'container',
     '#attributes' => array(
@@ -41,7 +41,7 @@ function islandora_transcript_wf_getajax(AbstractObject $object) {
         'class' => array(),
       ),
       array(
-        '#markup' => $object['TRANSCRIPT_WF']->content,
+        '#markup' => $object[$ds]->content,
       ),
 
     ),
@@ -50,7 +50,7 @@ function islandora_transcript_wf_getajax(AbstractObject $object) {
   return $return;
 }
 
-function islandora_transcript_wf_ajax_callback($page_callback_result) {
+function apwa_transcript_ajax_callback($page_callback_result) {
   // Only render content
   $content = $page_callback_result;
   print(render($content));
