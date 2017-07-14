@@ -372,3 +372,28 @@ function apwa_iw_webform_submission_update($node, $submission) {
   }
 }
 
+/**
+ * Implements hook_islandora_webform_object_submission_query_count_alter().
+ */
+function apwa_iw_islandora_webform_object_submission_query_count_alter(&$query, $params) {
+  /*
+   * Limit each user to 1 submission in draft at a time (across all objects)
+   */
+  if (!empty($params['uid'])) {
+    $all_draft_query = db_select('webform_submissions', 's')
+      ->distinct()
+      ->fields('s', array('sid', 'is_draft'));
+    $all_draft_query->condition('s.is_draft', 1);
+    if (!empty($params['nid'])) {
+      $all_draft_query->condition('s.nid', $params['nid']);
+    }
+    $all_draft_query->condition('s.uid', $params['uid']);
+    if (!empty($params['pid'])) {
+      $all_draft_query->join('webform_component', 'c', "c.nid = s.nid and c.form_key = 'islandora_object_pid'");
+      $all_draft_query->join('webform_submitted_data', 'd', "d.sid = s.sid and d.cid = c.cid");
+      $all_draft_query->condition('d.data', $params['pid'], '!=');
+    }
+
+    $query->union($all_draft_query, 'DISTINCT');
+  }
+}
