@@ -208,6 +208,9 @@ function apwa_iw_process_islandora_audio(&$vars) {
 function apwa_iw_process_islandora_book_book(&$vars) {
   module_load_include('inc', 'apwa_iw', 'includes/object_display');
   apwa_iw_process_all_object_view($vars);
+  if(!empty($vars['viewer'])) {
+    $vars['islandora_content'] = $vars['viewer'];
+  }
 }
 function apwa_iw_process_islandora_book_page(&$vars) {
   module_load_include('inc', 'apwa_iw', 'includes/object_display');
