@@ -31,42 +31,43 @@ function apwa_iw_iwi_ingestible_datastreams_alter(&$datastreams, $object, $mimet
  */
 function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
   global $user;
-  foreach(element_children($render) as $jqid) {
-    if($jqid != 'inline-webform-target' && empty($render[$jqid]['#entity']->webform['status'])) {
-      unset ($render[$jqid]);
-      continue;
-    }
-    if($jqid != 'inline-webform-target') {
-      if (!empty($render[$jqid]['webform-links'])) {
-        $webform_link_indexes = element_children($render[$jqid]['webform-links']);
-        foreach($webform_link_indexes as $webform_link_index) {
+  $transcript_ds = apwa_iw_get_transcription_ds($alter_data['islandora_object']);
+  $jqids = element_children($render);
+  // There's an assumption here that having any kind of transcription datastream
+  // means we should not show the transcribe link.
+  if(empty($transcript_ds)) {
+    foreach($jqids as $jqid) {
+      if($jqid != 'inline-webform-target' && empty($render[$jqid]['#entity']->webform['status'])) {
+        unset ($render[$jqid]);
+        continue;
+      }
+      if($jqid != 'inline-webform-target') {
+        if (!empty($render[$jqid]['webform-links'])) {
+          $webform_link_indexes = element_children($render[$jqid]['webform-links']);
+          foreach($webform_link_indexes as $webform_link_index) {
 
-        }
-        $submissions = !empty($render[$jqid]['#submissions']) ? $render[$jqid]['#submissions'] : array();
-        $state_counts = array('is draft' => array('total' => 0, 'by-user' => 0));
-        foreach($submissions as $sid => $submission) {
-          if(!empty($submission->is_draft)) {
-            $state_counts['is draft']['total'] += 1;
-            if($user->uid && $submission->uid == $user->uid) {
-              $state_counts['is draft']['by-user'] += 1;
-            }
           }
-          if(!empty($submission->_webform_workflow_state->wsid)) {
-            $ws = $submission->_webform_workflow_state;
-            $state_counts[$ws->wsid]['total'] = 1 + (empty($state_counts[$ws->wsid]['total']) ? 0 : $state_counts[$ws->wsid]['total']);
-            if($user->uid && $submission->uid == $user->uid) {
-              $state_counts[$ws->wsid]['by-user'] = 1 + (empty($state_counts[$ws->wsid]['by-user']) ? 0 : $state_counts[$ws->wsid]['by-user']);
+          $submissions = !empty($render[$jqid]['#submissions']) ? $render[$jqid]['#submissions'] : array();
+          $state_counts = array('is draft' => array('total' => 0, 'by-user' => 0));
+          foreach($submissions as $sid => $submission) {
+            if(!empty($submission->is_draft)) {
+              $state_counts['is draft']['total'] += 1;
+              if($user->uid && $submission->uid == $user->uid) {
+                $state_counts['is draft']['by-user'] += 1;
+              }
+            }
+            if(!empty($submission->_webform_workflow_state->wsid)) {
+              $ws = $submission->_webform_workflow_state;
+              $state_counts[$ws->wsid]['total'] = 1 + (empty($state_counts[$ws->wsid]['total']) ? 0 : $state_counts[$ws->wsid]['total']);
+              if($user->uid && $submission->uid == $user->uid) {
+                $state_counts[$ws->wsid]['by-user'] = 1 + (empty($state_counts[$ws->wsid]['by-user']) ? 0 : $state_counts[$ws->wsid]['by-user']);
+              }
             }
           }
         }
       }
     }
-  }
-  $transcript_ds = apwa_iw_get_transcription_ds($alter_data['islandora_object']);
-  // There's an assumption here that having any kind of transcription datastream
-  // means we should not show the transcribe link.
-  // TODO: This may not always be valid!!
-  if(empty($transcript_ds)) {
+
     module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
     $show_states = apwa_iw_webform_link_states();
     foreach($show_states as $wsid => $show_state) {
@@ -89,6 +90,15 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
     }
   }
   else {
+    // We have a transcription datastream. Remove webform links but keep
+    // the webform target div so we can fill it with the transcription.
+    foreach($jqids as $jqid) {
+      if($jqid != 'inline-webform-target') {
+        unset($render[$jqid]);
+      }
+    }
+    // Add the transcription link element. The link itself is populated in
+    // transcript.js, with the settings populated in /includes/object_display.inc
     $render['transcript-link'] = array(
       '#type' => 'container',
       '#attributes' => array(

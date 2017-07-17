@@ -49,21 +49,18 @@ function apwa_iw_process_all_object_view(&$vars) {
   $vars['webform_links'] = $vars['webform_target'] = NULL;
   if (module_load_include('inc', 'islandora_webform', 'includes/utilities')) {
     $webforms = islandora_webform_object_get_webforms($vars['islandora_object']);
-    if (!empty($webforms)) {
-      $vars['webform_links'] = theme('islandora_webform_links', array(
-        'webform_data' => $webforms,
-        'islandora_object' => $vars['islandora_object'],
-      ));
+    $vars['webform_links'] = theme('islandora_webform_links', array(
+      'webform_data' => $webforms,
+      'islandora_object' => $vars['islandora_object'],
+    ));
 
-      $vars['webform_target'] = array(
-        '#type' => 'container',
-        '#attributes' => array(
-          'id' => APWA_INLINE_WEBFORM_DOM_ID,
-          'class' => array(
-          ),
-        )
-      );
-    }
+    $vars['webform_target'] = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => APWA_INLINE_WEBFORM_DOM_ID,
+        'class' => array(),
+      )
+    );
   }
   $apwa_iw_js_settings = array('pid' => $vars['islandora_object']->id, 'target' => '#' . APWA_INLINE_WEBFORM_DOM_ID, 'transcript_ds' => apwa_iw_get_transcription_ds($vars['islandora_object']));
   drupal_add_js(drupal_get_path('module', 'apwa_iw') . '/js/resize-transcription-window.js');
