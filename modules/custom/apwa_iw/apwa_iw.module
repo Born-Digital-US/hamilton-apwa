@@ -323,10 +323,8 @@ function apwa_iw_menu() {
  * @return string|null
  */
 function apwa_iw_get_transcription_ds($islandora_object) {
-  $transcript_datastream = &drupal_static(__FUNCTION__ . "_DS");
-  $transcript_datastream_fetched = &drupal_static(__FUNCTION__ . "_fetched");
-  if($transcript_datastream_fetched !== 'yes') {
-    $transcript_datastream_fetched = 'no';
+  $transcript_datastream_fetched = &drupal_static(__FUNCTION__ . '_' . $islandora_object->id . "_fetched");
+  if(!isset($transcript_datastream_fetched)) {
     $transcript_datastreams = array(
       'TRANSCRIPT_WF',
       'TRANSCRIPT',
@@ -335,12 +333,12 @@ function apwa_iw_get_transcription_ds($islandora_object) {
     );
     foreach($transcript_datastreams as $transcript_datastream) {
       if (isset($islandora_object[$transcript_datastream]) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $islandora_object[$transcript_datastream])) {
-        $transcript_datastream_fetched = 'yes';
-        return $transcript_datastream;
+        $transcript_datastream_fetched = $transcript_datastream;
+        break;
       }
     }
   }
-  return $transcript_datastream;
+  return $transcript_datastream_fetched;
 }
 
 /**
