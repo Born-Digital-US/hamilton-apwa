@@ -69,12 +69,13 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
     }
 
     module_load_include('inc', 'apwa_iw', 'includes/webform_link_states');
+    module_load_include('inc', 'apwa_iw', 'includes/convert_number_to_words');
     $show_states = apwa_iw_webform_link_states();
     foreach($show_states as $wsid => $show_state) {
       if(!empty($state_counts[$wsid]['total'])) {
-        $label = format_plural($state_counts[$wsid]['total'], '1 !single', '@count !plural', array('!single' => $show_state['link-text-single'], '!plural' => $show_state['link-text-plural']));
+        $label = format_plural($state_counts[$wsid]['total'], '!countwords !single', '!countwords !plural', array('!single' => $show_state['link-text-single'], '!countwords' => convert_number_to_words($state_counts[$wsid]['total']), '!plural' => $show_state['link-text-plural']));
         if(!empty($state_counts[$wsid]['by-user'])) {
-          $label .= t(' (including !count by you)', array('!count' => $state_counts[$wsid]['by-user']));
+          $label .= t(' (which includes !count by you)', array('!count' => strtolower(convert_number_to_words($state_counts[$wsid]['by-user']))));
         }
         $render[$jqid]['webform-links'][$alter_data['islandora_object']->id][] = array(
           '#type' => 'container',
@@ -386,7 +387,9 @@ function apwa_iw_webform_submission_update($node, $submission) {
  */
 function apwa_iw_islandora_webform_object_submission_query_count_alter(&$query, $params) {
   /*
-   * Limit each user to 1 submission in draft at a time (across all objects)
+   * Add count of submissions in draft across all objects.
+   * This limits the number of draft submissions for any object targeted by
+   * the webform identified in $params['nid'].
    */
   if (!empty($params['uid'])) {
     $all_draft_query = db_select('webform_submissions', 's')
@@ -397,11 +400,6 @@ function apwa_iw_islandora_webform_object_submission_query_count_alter(&$query, 
       $all_draft_query->condition('s.nid', $params['nid']);
     }
     $all_draft_query->condition('s.uid', $params['uid']);
-    if (!empty($params['pid'])) {
-      $all_draft_query->join('webform_component', 'c', "c.nid = s.nid and c.form_key = 'islandora_object_pid'");
-      $all_draft_query->join('webform_submitted_data', 'd', "d.sid = s.sid and d.cid = c.cid");
-      $all_draft_query->condition('d.data', $params['pid'], '!=');
-    }
 
     $query->union($all_draft_query, 'DISTINCT');
   }
