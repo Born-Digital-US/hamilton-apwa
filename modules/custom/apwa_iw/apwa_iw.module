@@ -116,14 +116,14 @@ function apwa_iw_islandora_theme_webform_links_alter(&$render, $alter_data) {
 
 /**
  * Implements hook_islandora_webform_theme_webform_link_alter().
- *
- * If user is anonymous, and by logging in could submit a transcription, provide a link
- * to a webform where volunteer intake information can be gathered.
  */
-function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $islandora_webform_record, $pid) {
+function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $islandora_webform_record, $pid, $sid) {
   $signup_count = &drupal_static(__FUNCTION__ . '-signup-count');
+  global $user;
   if(empty(element_children($webform_link))) {
     $node = node_load($islandora_webform_record->entity_id);
+    // If user is anonymous, and by logging in could submit a transcription, provide a link
+    // to a webform where volunteer intake information can be gathered.
     if(!$signup_count && user_is_anonymous() && in_array(2, $node->webform['roles']) && !islandora_webform_submission_total_limit_check($node, $pid)) {
       $signup_count += 1;
       $webform_link['sign-up'] = array(
@@ -142,7 +142,30 @@ function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $isl
           'query' => drupal_get_destination(),
         ),
       );
-
+    }
+    // If we have a submission, check to see if it is by the current user.
+    // If so, present a link to edit it.
+    elseif (!empty($sid)) {
+      $submission = webform_get_submission($islandora_webform_record->entity_id, $sid);
+      if($submission->uid == $user->uid) {
+        // Force replacement of the webform link if there is an existing draft submission by this user.
+        module_load_include('inc', 'islandora_webform', 'theme/theme.inc');
+        $class = array('webform-link');
+        if ($islandora_webform_record->link_mode == 'inline') {
+          $class[] = 'use-ajax';
+        }
+        $webform_link_options = array(
+          'html' => TRUE,
+          'query' => array(
+            'pid' => $pid,
+          ),
+          'attributes' => array(
+            'class' => $class,
+          ),
+        );
+        // To avoid recursion, set $alter = FALSE!
+        $webform_link = islandora_webform_theme_webform_link($islandora_webform_record, $webform_link_options, $pid, $islandora_webform_record->link_mode, $sid, $alter = FALSE, $force = TRUE);
+      }
     }
   }
 }
