@@ -129,8 +129,7 @@ function apwa_iw_islandora_webform_theme_webform_link_alter(&$webform_link, $isl
       $webform_link['sign-up'] = array(
         '#theme' => 'link',
         '#text' => t('Help transcribe this.'),
-        // TODO Edit this path to point to a webform to intake transcribers.
-        '#path' => '/',
+        '#path' => variable_get('apwa_signup_webform_path', '/'),
         '#options' => array(
           'attributes' => array(
             'class' => array(
